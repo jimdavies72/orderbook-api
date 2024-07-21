@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
-const { Order } = require("../order/orderModel");
-const { Comment } = require("../comment/commentModel");
+const { Schema } = mongoose;
 
-const containerSchema = new mongoose.Schema({
+const containerSchema = new Schema({
+  supplier: { 
+    type: Schema.Types.ObjectId, 
+    ref: "Supplier" 
+  },
   containerId: {
     type: String,
     required: true,
@@ -11,15 +14,11 @@ const containerSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  orders: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Order,
-    },
-  ],
+  orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
   value: {
     type: Number,
     required: true,
+    default: 0,
   },
   full: {
     type: Boolean,
@@ -27,28 +26,29 @@ const containerSchema = new mongoose.Schema({
   },
   containerNumber: {
     type: String,
+    required: false,
   },
   vesselDetails: {
     type: String,
+    required: false,
   },
   sailingDate: {
     type: Date,
+    required: false,
   },
   etaUKPort: {
     type: Date,
+    required: false,
   },
   etaPort: {
     type: Date,
+    required: false,
   },
   bookedIn: {
     type: Date,
+    required: false,
   },
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Comment,
-    },
-  ],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   copyDocsRec: {
     type: String,
     required: true,
@@ -75,6 +75,6 @@ const containerSchema = new mongoose.Schema({
   },
 });
 
-const Container = mongoose.model("Container", containerSchema);
+const Container = mongoose.model.Container || mongoose.model("Container", containerSchema);
 
 module.exports = Container;

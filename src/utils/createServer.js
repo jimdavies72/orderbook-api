@@ -11,6 +11,8 @@ const rateLimit = require("express-rate-limit");
 const { errorHandler } = require("../middleware/error.middleware");
 
 const supplierRouter = require("../supplier/supplierRoutes");
+const containerRouter = require("../container/containerRoutes");
+const commentRouter = require("../comment/commentRoutes");
 const testRouter = require("../test/testRoutes");
 
 const unmatchedRouter = require("../unmatched/unmatchedRoutes");
@@ -53,6 +55,8 @@ exports.createServer = () => {
   
   app.use(testRouter);
   app.use(supplierRouter);
+  app.use(containerRouter);
+  app.use(commentRouter);
   //TODO: add new routes here:
 
   //error handler for invalid tokens

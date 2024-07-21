@@ -1,23 +1,19 @@
 const mongoose = require("mongoose");
-const { Container } = require("../container/containerModel");
+const { Schema } = mongoose;
 
-const supplierSchema = new mongoose.Schema({
+const supplierSchema = new Schema({
   supplierId: {
     type: String,
     required: true,
+    uppercase: true,
   },
   name: {
     type: String,
     required: true,
   },
-  containers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Container,
-    },
-  ],
+  containers: [{ type: Schema.Types.ObjectId, ref: "Container" }],
 });
 
-const Supplier = mongoose.model("Supplier", supplierSchema);
+const Supplier = mongoose.model.Supplier || mongoose.model("Supplier", supplierSchema);
 
 module.exports = Supplier;

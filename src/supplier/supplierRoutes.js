@@ -15,8 +15,8 @@ const supplierRouter = Router();
 // add
 supplierRouter.post("/suppliers", addSupplier);
 // get
-supplierRouter.put("/suppliers", getSuppliersList);
-supplierRouter.patch("/suppliers", getSupplier);
+supplierRouter.get("/suppliers", getSuppliersList);
+supplierRouter.put("/suppliers", getSupplier);
 //update
 supplierRouter.put("/suppliers/update", updateSupplier);
 //delete ...

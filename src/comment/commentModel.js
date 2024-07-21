@@ -1,6 +1,15 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const commentSchema = new mongoose.Schema({
+const commentSchema = new Schema({
+  container: {
+    type: Schema.Types.ObjectId,
+    ref: "Container"
+  },
+  order: {
+    type: Schema.Types.ObjectId,
+    ref: "Order"
+  },
   comment: {
     type: String,
     required: true
@@ -11,6 +20,6 @@ const commentSchema = new mongoose.Schema({
   }
 });
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment = mongoose.model.Comment || mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;

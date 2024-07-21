@@ -1,8 +1,15 @@
-const Supplier = require("./SupplierModel");
+const Supplier = require("../supplier/supplierModel");
 
-exports.getSuppliersList = async (req, res) => {
+exports.getContainerList = async (req, res) => {
   try {
-    const data = await Supplier.find({}, "supplierId, name");
+
+    let filter = {}
+    if (req.body.filterKey){
+      filter = {
+        [req.body.filter.filterKey]: req.body.filter.filterValue,
+      };
+    }
+    const data = await Supplier.find(filter);
 
     if (data.length === 0) {
       res.status(404).send({ count: 0, data });
@@ -14,38 +21,62 @@ exports.getSuppliersList = async (req, res) => {
   }
 };
 
-exports.getSupplier = async (req, res) => {
+exports.getContainer = async (req, res) => {
   try {
-    const data = await Supplier.find(
-      {
-        [req.body.filterKey]: req.body.filterValue,
+
+    let filter = {
+      [req.body.filterKey]: req.body.filterValue,
+    };
+    if (!req.body.includeComplete) {
+      //we do want to filter out those that are complete
+      filter.complete = false;
+    };
+
+    const supplier = await Supplier.findOne({
+      containers: { $elemMatch: filter,
       },
-      "supplierId, name"
-    );
+    });
 
-    if (data.length === 0) {
-      res.status(404).send({ count: 0, data });
+    if (!supplier) {
+      res.status(404).send({ message: "container not found" });
       return;
     }
-    res.status(200).send({ count: data.length, data });
+
+    const container = supplier.containers.find((item) => item[req.body.filterKey] === req.body.filterValue);
+
+    res.status(200).send({ supplier: { supplierId: supplier.supplierId, name: supplier.name }, container });
+
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 };
 
-exports.addSupplier = async (req, res) => {
+exports.addContainer = async (req, res) => {
   try {
-    const supplier = await Supplier.create(req.body);
+    const supplier = await Supplier.findById(req.body._id);
 
-    res.status(201).send({ supplier });
+    if (!supplier) {
+      res.status(404).send({ error: "supplier not found" });
+      return;
+    }
+
+    await supplier.containers.push(req.body.data);
+    const data = await supplier.save();
+
+    if (!data) {
+      res.status(404).send({ error: "comment could not be added" });
+      return;
+    }
+    res.status(201).send({ message: "container added" });
+     
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 };
 
-exports.updateSupplier = async (req, res) => {
+exports.updateContainer = async (req, res) => {
   try {
-    const supplier = await Supplier.findOneAndUpdate(
+    const Container = await Container.findOneAndUpdate(
       { [req.body.filter.filterKey]: req.body.filter.filterValue },
       {
         name: req.body.data.name,
@@ -53,7 +84,12 @@ exports.updateSupplier = async (req, res) => {
       { new: true }
     );
 
-    res.status(200).send({ supplier: supplier });
+    if (Container) {
+      const ContainerData = { ContainerId: Container.ContainerId, name: Container.name };
+      res.status(200).send({ Container: ContainerData });
+    } else {
+      res.status(404).send({ error: "Container not found" });
+    }
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

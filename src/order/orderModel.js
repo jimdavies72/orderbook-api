@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
-const { Comment } = require("../comment/commentModel");
+const { Schema } = mongoose;
 
-const orderSchema = new mongoose.Schema({
+const orderSchema = new Schema({
+  container: {
+    type: Schema.Types.ObjectId,
+    ref: "Container"
+  },
   orderNumber: {
     type: String,
     required: true,
@@ -60,12 +64,7 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: Comment,
-    },
-  ],
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   sample: {
     type: String,
     required: true,
@@ -92,6 +91,6 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-const Order = mongoose.model("Order", orderSchema);
+const Order = mongoose.model.Order || mongoose.model("Order", orderSchema);
 
 module.exports = Order;

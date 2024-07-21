@@ -6,6 +6,7 @@ const testRouter = Router();
 
 testRouter.get("/test", getTestStrings);
 testRouter.put("/test", validateAccessToken, getTestStrings);
-testRouter.post("/test", validateAccessToken, addTestString);
+testRouter.post("/test/notoken", addTestString);
+testRouter.post("/test/token", validateAccessToken, addTestString);
 
 module.exports = testRouter;
