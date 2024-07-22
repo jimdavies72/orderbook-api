@@ -1,14 +1,26 @@
-exports.reqFilter = (fKey, fValue, includeComplete ) => {
-  let filter = {
-      [fKey]: fValue,
-  };
-
-  if (!includeComplete) {
-    //we do want to filter out those that are complete
-    filter.complete = false;
-  };
-
-  filter = {containers: { $elemMatch: filter}}
+exports.popOptions = (path, includeComplete, fieldsExcluded, deepPop={}) => {
   
-  return filter;
+  let popOptions = {path: path};
+
+  if (includeComplete === false) {
+    //we do want to filter out those that are complete
+    popOptions.match = {complete: false};
+  };
+
+  if (fieldsExcluded) {
+    if (Object.prototype.toString.call(fieldsExcluded) == '[object Array]') {
+      let fieldList = "";
+      fieldsExcluded.forEach(field => {
+        fieldList += "-" + field + " ";
+      });
+
+      popOptions.select = fieldList.trim();
+    };
+  };
+
+  if (Object.keys(deepPop).length > 0) {
+    popOptions.populate = deepPop;
+  };
+
+  return popOptions;
 };

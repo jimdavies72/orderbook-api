@@ -15,7 +15,7 @@ const containerRouter = Router();
 // add
 containerRouter.post("/containers", addContainer);
 // get
-containerRouter.get("/containers", getContainerList);
+containerRouter.patch("/containers", getContainerList);
 containerRouter.put("/containers", getContainer);
 //update
 containerRouter.put("/containers/update", updateContainer);

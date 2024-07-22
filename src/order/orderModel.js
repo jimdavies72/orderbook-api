@@ -6,6 +6,11 @@ const orderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Container"
   },
+  supplier: {
+    type: Schema.Types.ObjectId,
+    ref: "Supplier",
+    required: true
+  },
   orderNumber: {
     type: String,
     required: true,
@@ -41,7 +46,9 @@ const orderSchema = new Schema({
     type: Number,
     required: false,
     default: () => {
-      return this.quantity * this.unitWeight;
+      if (this.unitWeight & this.quantity) {
+        return this.quantity * this.unitWeight
+      };
     },
   },
   ukRequiredDate: {
@@ -89,7 +96,15 @@ const orderSchema = new Schema({
     enum: ["Y", "N", "N/A"],
     default: "N/A",
   },
-});
+  createdBy: {
+    type: String,
+    required: true,
+  },
+  updatedBy: {
+    type: String,
+  }
+}, 
+{ timestamps: true });
 
 const Order = mongoose.model.Order || mongoose.model("Order", orderSchema);
 

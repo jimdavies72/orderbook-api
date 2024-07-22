@@ -12,6 +12,7 @@ const { errorHandler } = require("../middleware/error.middleware");
 
 const supplierRouter = require("../supplier/supplierRoutes");
 const containerRouter = require("../container/containerRoutes");
+const orderRouter = require("../order/orderRoutes");
 const commentRouter = require("../comment/commentRoutes");
 const testRouter = require("../test/testRoutes");
 
@@ -56,6 +57,7 @@ exports.createServer = () => {
   app.use(testRouter);
   app.use(supplierRouter);
   app.use(containerRouter);
+  app.use(orderRouter);
   app.use(commentRouter);
   //TODO: add new routes here:
 

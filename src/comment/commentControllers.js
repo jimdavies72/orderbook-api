@@ -1,23 +1,73 @@
-const Supplier = require("../supplier/supplierModel");
+const Comment = require("./commentModel");
+const Container = require("../container/containerModel");
+const Order = require("../order/orderModel");
 
-exports.addComment = async (req, res) => {
+exports.getComments = async (req, res) => {
   try {
-    const supplier = await Supplier.findById(req.body._id);
+    let filter = {}
+    if (req.body.filterKey) {
+      filter = { [req.body.filterKey]: req.body.filterValue }
+    }
 
-    if (!supplier) {
-      res.status(404).send({ error: "supplier not found" });
+    console.log(filter)
+  
+    const comments = await Comment.find(filter).populate("container", "containerId").populate("order", "orderNumber");
+
+    if (!comments) {
+      res.status(404).send({ message: "comments not found" });
       return;
     }
 
-    await supplier.comments.push(req.body.data);
-    const data = await supplier.save();
-    console.log(comment)
-    if (!comment) {
-      res.status(404).send({ error: "comment could not be added" });
-      return;
-    }
-    res.status(201).send({ data });
+    res.status(200).send({count: comments.length, comment: comments });
+   
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 };
+
+exports.addComment = async (req, res) => {
+  try {
+    const comment = await Comment.create(req.body);
+
+    if (!comment) {
+     return res.status(404).send({ message: "comment could not be added" });
+    }
+
+    if (req.body.container) {
+      const container = await Container.findById({ _id: comment.container});
+      container.comments.push(comment);
+      await container.save();
+    } else if (req.body.order) {
+      const order = await Order.findById({ _id: comment.order});
+      order.comments.push(comment);
+      await order.save();
+    } else {
+      return res.status(404).send({ message: "comment parent not found" });
+    }
+
+    res.status(201).send({ comment });
+
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+exports.updateComment = async (req, res) => {
+  try {
+
+    const comment = await Comment.findOneAndUpdate(
+      { [req.body.filterKey]: req.body.filterValue },
+      { comment: req.body.comment, updatedBy: req.body.updatedBy },
+    );
+
+    if (!comment) {
+      return res.status(404).send({ message: "comment not updated" });
+    }
+
+    res.status(200).send({ message: "comment updated successfully" });
+
+    
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+}

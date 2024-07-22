@@ -2,20 +2,21 @@ const { validateAccessToken } = require("../middleware/auth0.middleware");
 const { Router } = require("express");
 
 const {
-  addComment
+  addComment,
+  getComments,
+  updateComment
 } = require("./commentControllers");
 
 const commentRouter = Router();
 
-//containerRouter.use("*", validateAccessToken);
+//commentRouter.use("*", validateAccessToken);
 
 // add
 commentRouter.post("/comments", addComment);
 // get
-//containerRouter.get("/containers", getContainerList);
-//containerRouter.put("/containers", getContainer);
+commentRouter.patch("/comments", getComments);
 //update
-//containerRouter.put("/containers/update", updateContainer);
+commentRouter.put("/comments/update", updateComment);
 //delete ...
 
 module.exports = commentRouter;

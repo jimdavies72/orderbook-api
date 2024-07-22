@@ -17,8 +17,12 @@ const commentSchema = new Schema({
   createdBy: {
     type: String,
     required: true
+  },
+  updatedBy: {
+    type: String,
   }
-});
+}, 
+{ timestamps: true });
 
 const Comment = mongoose.model.Comment || mongoose.model("Comment", commentSchema);
 

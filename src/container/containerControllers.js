@@ -1,50 +1,64 @@
+const Container = require("./containerModel");
+const Order = require("../order/orderModel");
 const Supplier = require("../supplier/supplierModel");
+const { popOptions } = require("../utils/helperFunctions");
+
+const getSupplierName = async (supplier_id) => {
+  const supplier = await Supplier.findById(supplier_id);
+  
+  if (!supplier) {
+    return null;
+  }
+  return supplier.name;
+}
 
 exports.getContainerList = async (req, res) => {
   try {
+    const orderOptions = popOptions("orders", null, ["container"], {
+      path: "comments",
+      select: "-order",
+    });
 
     let filter = {}
-    if (req.body.filterKey){
+    if (!req.body.includeComplete ){
       filter = {
-        [req.body.filter.filterKey]: req.body.filter.filterValue,
+        complete : false,
       };
     }
-    const data = await Supplier.find(filter);
+    const containers = await Container.find(filter).populate("comments", "-container").populate(orderOptions).populate("supplier", "-_id name");
 
-    if (data.length === 0) {
-      res.status(404).send({ count: 0, data });
+    if (!containers) {
+      res.status(404).send({ message: "containers not found" });
       return;
     }
-    res.status(200).send({ count: data.length, data });
+    res.status(200).send({count: containers.length, containers});
+
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    res.status(500).send({ error: error.message }); 
   }
 };
 
 exports.getContainer = async (req, res) => {
   try {
+    const orderOptions = popOptions(
+      "orders", 
+      null,
+      ["container"],
+      { path: "comments", select: "-order" } 
+    );
 
-    let filter = {
+    const container = await Container.findOne({
       [req.body.filterKey]: req.body.filterValue,
-    };
-    if (!req.body.includeComplete) {
-      //we do want to filter out those that are complete
-      filter.complete = false;
-    };
+    }).populate("comments").populate(orderOptions);
+    
+  
 
-    const supplier = await Supplier.findOne({
-      containers: { $elemMatch: filter,
-      },
-    });
-
-    if (!supplier) {
+    if (!container) {
       res.status(404).send({ message: "container not found" });
       return;
     }
 
-    const container = supplier.containers.find((item) => item[req.body.filterKey] === req.body.filterValue);
-
-    res.status(200).send({ supplier: { supplierId: supplier.supplierId, name: supplier.name }, container });
+    res.status(200).send({ supplier: await getSupplierName(container.supplier), container });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -53,21 +67,17 @@ exports.getContainer = async (req, res) => {
 
 exports.addContainer = async (req, res) => {
   try {
-    const supplier = await Supplier.findById(req.body._id);
-
-    if (!supplier) {
-      res.status(404).send({ error: "supplier not found" });
-      return;
+    const container = await Container.create(req.body);
+   
+    if (!container) {
+      return res.status(404).send({ message: "container could not be added" });
     }
 
-    await supplier.containers.push(req.body.data);
-    const data = await supplier.save();
+    const supplier = await Supplier.findById({_id: container.supplier});
+    supplier.containers.push(container);
+    await supplier.save();
 
-    if (!data) {
-      res.status(404).send({ error: "comment could not be added" });
-      return;
-    }
-    res.status(201).send({ message: "container added" });
+    res.status(201).send({ container });
      
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -76,74 +86,20 @@ exports.addContainer = async (req, res) => {
 
 exports.updateContainer = async (req, res) => {
   try {
-    const Container = await Container.findOneAndUpdate(
-      { [req.body.filter.filterKey]: req.body.filter.filterValue },
+    const container = await Container.findOneAndUpdate(
+      { [req.body.filterKey]: req.body.filterValue },
       {
-        name: req.body.data.name,
+        "$set": req.body.data,
       },
-      { new: true }
     );
 
-    if (Container) {
-      const ContainerData = { ContainerId: Container.ContainerId, name: Container.name };
-      res.status(200).send({ Container: ContainerData });
-    } else {
-      res.status(404).send({ error: "Container not found" });
+    if (!container) {
+      return res.status(404).send({ message: "container not found" });
     }
+
+    res.status(200).send({ message: "container updated successfully" });
+    
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 };
-
-// exports.updateMultiTasks = async (req, res) => {
-//   try {
-//     const updateQueries = [];
-//     req.body.data.forEach((item) => {
-//       updateQueries.push({
-//         updateOne: {
-//           filter: { userId: req.body.userId, _id: item._id },
-//           update: { completed: req.body.completed },
-//         },
-//       });
-//     });
-
-//     const result = await Task.bulkWrite(updateQueries);
-//     res.status(200).send({ count: result });
-//   } catch (error) {
-//     res.status(500).send({ error: error.message });
-//   }
-// };
-
-// exports.deleteSingleTask = async (req, res) => {
-//   try {
-//     const task = await Task.deleteOne({
-//       [req.body.filterKey]: req.body.filterValue,
-//     });
-
-//     if (task.deletedCount === 0) {
-//       res.status(404).send({ error: "task not found" });
-//       return;
-//     }
-//     res.status(204).send("");
-//   } catch (error) {
-//     res.status(500).send({ error: error.message });
-//   }
-// };
-
-// exports.deleteMultiTasks = async (req, res) => {
-//   try {
-//     const deleteQueries = [];
-//     req.body.data.forEach((item) => {
-//       deleteQueries.push({
-//         deleteOne: {
-//           filter: { userId: req.body.userId, _id: item._id },
-//         },
-//       });
-//     });
-
-//     const result = await Task.bulkWrite(deleteQueries);
-//     res.status(200).send({ count: result });
-//   } catch (error) {
-//     res.status(500).send({ error: error.message });
-//   }
-// };
