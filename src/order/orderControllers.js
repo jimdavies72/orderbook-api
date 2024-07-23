@@ -11,13 +11,13 @@ exports.getOrders = async (req, res) => {
 
     const orders = await Order.find(filter)
       .populate("supplier", "-_id name")
-      .populate("comments", "-_id");
+      .populate("comments", "-order");
     
     if (!orders) {
       return res.status(404).send({ message: "orders not found" });   
     }
 
-    res.status(200).send({ orders });
+    res.status(200).send({count: orders.length, orders });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -35,7 +35,7 @@ exports.addOrder = async (req, res) => {
     container.orders.push(order);
     await container.save();
 
-    res.status(201).send({ order });
+    res.status(201).send({ message: "order added successfully" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });

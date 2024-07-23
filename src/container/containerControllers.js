@@ -12,7 +12,7 @@ const getSupplierName = async (supplier_id) => {
   return supplier.name;
 }
 
-exports.getContainerList = async (req, res) => {
+exports.getContainers = async (req, res) => {
   try {
     const orderOptions = popOptions("orders", null, ["container"], {
       path: "comments",
@@ -20,48 +20,31 @@ exports.getContainerList = async (req, res) => {
     });
 
     let filter = {}
+    if (req.body.filterKey) {
+      filter = { [req.body.filterKey]: req.body.filterValue };
+    };
     if (!req.body.includeComplete ){
       filter = {
+        ...filter,
         complete : false,
       };
-    }
+    };
+
     const containers = await Container.find(filter).populate("comments", "-container").populate(orderOptions).populate("supplier", "-_id name");
 
-    if (!containers) {
-      res.status(404).send({ message: "containers not found" });
-      return;
-    }
-    res.status(200).send({count: containers.length, containers});
+    let key = ""
+    if (containers.length === 0) {
+      return res.status(404).send({ message: "containers not found" });
+    } else if (containers.length === 1) {
+      key = "container";
+    } else {
+      key = "containers";
+    };
+
+    res.status(200).send({count: containers.length, [key]: containers});
 
   } catch (error) {
     res.status(500).send({ error: error.message }); 
-  }
-};
-
-exports.getContainer = async (req, res) => {
-  try {
-    const orderOptions = popOptions(
-      "orders", 
-      null,
-      ["container"],
-      { path: "comments", select: "-order" } 
-    );
-
-    const container = await Container.findOne({
-      [req.body.filterKey]: req.body.filterValue,
-    }).populate("comments").populate(orderOptions);
-    
-  
-
-    if (!container) {
-      res.status(404).send({ message: "container not found" });
-      return;
-    }
-
-    res.status(200).send({ supplier: await getSupplierName(container.supplier), container });
-
-  } catch (error) {
-    res.status(500).send({ error: error.message });
   }
 };
 
@@ -77,7 +60,7 @@ exports.addContainer = async (req, res) => {
     supplier.containers.push(container);
     await supplier.save();
 
-    res.status(201).send({ container });
+    res.status(201).send({ message: "container added successfully" });
      
   } catch (error) {
     res.status(500).send({ error: error.message });

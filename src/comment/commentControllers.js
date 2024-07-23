@@ -45,7 +45,7 @@ exports.addComment = async (req, res) => {
       return res.status(404).send({ message: "comment parent not found" });
     }
 
-    res.status(201).send({ comment });
+    res.status(201).send({ message: "comment added successfully" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });

@@ -2,23 +2,22 @@ const { validateAccessToken } = require("../middleware/auth0.middleware");
 const { Router } = require("express");
 
 const {
-  getContainerList, 
-  getContainer, 
+  getContainers, 
   addContainer, 
   updateContainer
 } = require("./containerControllers");
 
 const containerRouter = Router();
 
+//TODO: enable containerRouter token validation
 //containerRouter.use("*", validateAccessToken);
 
 // add
 containerRouter.post("/containers", addContainer);
 // get
-containerRouter.patch("/containers", getContainerList);
-containerRouter.put("/containers", getContainer);
+containerRouter.patch("/containers", getContainers);
 //update
 containerRouter.put("/containers/update", updateContainer);
-//delete ...
+//TODO: delete route ...
 
 module.exports = containerRouter;

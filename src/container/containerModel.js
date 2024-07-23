@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const containerSchema = new Schema({
-  supplier: { 
-    type: Schema.Types.ObjectId, 
-    ref: "Supplier" 
+  supplier: {
+    type: Schema.Types.ObjectId,
+    ref: "Supplier",
   },
   containerId: {
     type: String,
@@ -32,6 +32,10 @@ const containerSchema = new Schema({
     type: String,
     required: false,
   },
+  stuffindDate: {
+    type: Date,
+    required: false,
+  },
   sailingDate: {
     type: Date,
     required: false,
@@ -40,15 +44,10 @@ const containerSchema = new Schema({
     type: Date,
     required: false,
   },
-  etaPort: {
-    type: Date,
-    required: false,
-  },
   bookedIn: {
     type: Date,
     required: false,
   },
-  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   copyDocsRec: {
     type: String,
     required: true,
@@ -73,7 +72,16 @@ const containerSchema = new Schema({
     enum: ["Y", "N", "N/A"],
     default: "Y",
   },
-});
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+  createdBy: {
+    type: String,
+    required: true,
+  },
+  updatedBy: {
+    type: String,
+  },
+}, 
+{ timestamps: true });
 
 const Container = mongoose.model.Container || mongoose.model("Container", containerSchema);
 

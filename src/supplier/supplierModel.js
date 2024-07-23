@@ -12,7 +12,15 @@ const supplierSchema = new Schema({
     required: true,
   },
   containers: [{ type: Schema.Types.ObjectId, ref: "Container" }],
-});
+  createdBy: {
+    type: String,
+    required: true,
+  },
+  updatedBy: {
+    type: String,
+  },
+}, 
+{ timestamps: true });
 
 const Supplier = mongoose.model.Supplier || mongoose.model("Supplier", supplierSchema);
 

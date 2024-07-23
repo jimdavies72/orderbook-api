@@ -19,7 +19,7 @@ const orderSchema = new Schema({
     type: Number,
     required: true,
   },
-  code: {
+  productCode: {
     type: String,
     required: true,
     uppercase: true,
@@ -61,17 +61,12 @@ const orderSchema = new Schema({
   },
   orderReceived: {
     type: Boolean,
-    default: true,
-  },
-  stuffingDate: {
-    type: Date,
-    required: false,
+    default: false,
   },
   loaded: {
     type: Boolean,
     default: false,
   },
-  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   sample: {
     type: String,
     required: true,
@@ -79,6 +74,12 @@ const orderSchema = new Schema({
     default: "N/A",
   },
   fabricColour: {
+    type: String,
+    required: true,
+    enum: ["Y", "N", "N/A"],
+    default: "N/A",
+  },
+  artworkDrawing: {
     type: String,
     required: true,
     enum: ["Y", "N", "N/A"],
@@ -96,6 +97,7 @@ const orderSchema = new Schema({
     enum: ["Y", "N", "N/A"],
     default: "N/A",
   },
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   createdBy: {
     type: String,
     required: true,

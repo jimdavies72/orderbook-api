@@ -24,3 +24,10 @@ exports.popOptions = (path, includeComplete, fieldsExcluded, deepPop={}) => {
 
   return popOptions;
 };
+
+const toISODate = () => {
+  const date = new Date().toISOString();
+  console.log(date);
+}
+
+toISODate();
