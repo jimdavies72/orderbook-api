@@ -1,12 +1,13 @@
+const mongoose = require("mongoose");
 const Supplier = require("./supplierModel");
 const Container = require("../container/containerModel");
 const { popOptions } = require("../utils/helperFunctions");
 
 
-exports.getAbridgedSupplierList = async (req, res) => {
+exports.getSupplierSummary = async (req, res) => {
   try {
-    const suppliers = await Supplier.find({}, "_id supplierId name");
-    
+    const suppliers = await Supplier.find({});
+
     if (suppliers.length === 0) {
       return res.status(404).send({ count: 0, suppliers });
     };
@@ -16,12 +17,15 @@ exports.getAbridgedSupplierList = async (req, res) => {
       count: { $sum: 1 }
     });
     
-    const abridgedSupplierList = suppliers.map((supplier) => {
+    const supplierSummary = suppliers.map((supplier) => {
       const count = containers.find((c) => c._id.toString() === supplier._id.toString());
 
       let object = {
+        _id: supplier._id,
         supplierId: supplier.supplierId,
         name: supplier.name,
+        enabled: supplier.enabled,
+        updatedAt: supplier.updatedAt
       };
 
       if (count) {
@@ -34,7 +38,7 @@ exports.getAbridgedSupplierList = async (req, res) => {
 
     });
 
-    res.status(200).send({ count: suppliers.length, suppliers: abridgedSupplierList });
+    res.status(200).send({ count: suppliers.length, suppliers: supplierSummary });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -91,24 +95,31 @@ exports.addSupplier = async (req, res) => {
   }
 };
 
-exports.updateSupplier = async (req, res) => {
+exports.upsertSupplier = async (req, res) => {
   try {
-    const supplier = await Supplier.findOneAndUpdate(
-      { [req.body.filterKey]: req.body.filterValue },
-      { name: req.body.supplier.name },
-      { new: true }
-    );
+    console.log(req.body.supplier)
+    let supplier = null;
 
-    if (!supplier) {
-      return res.status(404).send({ message: "supplier not found" });
-    }
+    if (!req.body.supplier._id) {
+      supplier = await Supplier.create(req.body.supplier)
+      console.log(supplier)
+      res.status(201).send({ message: "supplier created successfully" });
+    } else {
+      supplier = await Supplier.findOneAndUpdate(
+        { [req.body.filterKey]: req.body.filterValue },
+        { 
+          supplierId: req.body.supplier.supplierId,
+          name: req.body.supplier.name, 
+          enabled: req.body.supplier.enabled 
+        }
+      );
 
-    const supplierData = {
-      supplierId: supplier.supplierId,
-      name: supplier.name,
-    }
+      if (!supplier) {
+        return res.status(404).send({ message: "supplier not found" });
+      }
+    };
 
-    res.status(200).send({ supplier: supplierData });
+    res.status(200).send({ message: "supplier updated successfully" });
   
   } catch (error) {
     res.status(500).send({ error: error.message });

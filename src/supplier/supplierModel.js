@@ -6,6 +6,7 @@ const supplierSchema = new Schema({
     type: String,
     required: true,
     uppercase: true,
+    unique: true
   },
   name: {
     type: String,
@@ -15,6 +16,10 @@ const supplierSchema = new Schema({
   createdBy: {
     type: String,
     required: true,
+  },
+  enabled: {
+    type: Boolean,
+    default: true,
   },
   updatedBy: {
     type: String,

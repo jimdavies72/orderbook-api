@@ -9,7 +9,7 @@ const {
 
 const orderRouter = Router();
 
-//orderRouter.use("*", validateAccessToken);
+orderRouter.use("*", validateAccessToken);
 
 // add
 orderRouter.post("/orders", addOrder);

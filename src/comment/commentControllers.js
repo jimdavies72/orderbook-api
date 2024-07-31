@@ -8,8 +8,6 @@ exports.getComments = async (req, res) => {
     if (req.body.filterKey) {
       filter = { [req.body.filterKey]: req.body.filterValue }
     }
-
-    console.log(filter)
   
     const comments = await Comment.find(filter).populate("container", "containerId").populate("order", "orderNumber");
 

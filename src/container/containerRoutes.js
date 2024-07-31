@@ -9,8 +9,7 @@ const {
 
 const containerRouter = Router();
 
-//TODO: enable containerRouter token validation
-//containerRouter.use("*", validateAccessToken);
+containerRouter.use("*", validateAccessToken);
 
 // add
 containerRouter.post("/containers", addContainer);

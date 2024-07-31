@@ -2,25 +2,23 @@ const { validateAccessToken } = require("../middleware/auth0.middleware");
 const { Router } = require("express");
 
 const { 
-  getSupplier,
-  getAbridgedSupplierList, 
+  getSupplierSummary, 
   getSuppliers, 
   addSupplier, 
-  updateSupplier 
+  upsertSupplier 
 } = require('./supplierControllers');
 
 const supplierRouter = Router();
 
-//TODO: enable supplierRouter token validation
-//supplierRouter.use("*", validateAccessToken);
+supplierRouter.use("*", validateAccessToken);
 
 // add
 supplierRouter.post("/suppliers", addSupplier);
 // get
-supplierRouter.get("/suppliers", getAbridgedSupplierList)
+supplierRouter.get("/suppliers", getSupplierSummary);
 supplierRouter.patch("/suppliers", getSuppliers);
 //update
-supplierRouter.put("/suppliers/update", updateSupplier);
+supplierRouter.put("/suppliers/update", upsertSupplier);
 //TODO: delete route...
 
 module.exports = supplierRouter;

@@ -9,7 +9,7 @@ const {
 
 const commentRouter = Router();
 
-//commentRouter.use("*", validateAccessToken);
+commentRouter.use("*", validateAccessToken);
 
 // add
 commentRouter.post("/comments", addComment);

@@ -27,7 +27,6 @@ exports.popOptions = (path, includeComplete, fieldsExcluded, deepPop={}) => {
 
 const toISODate = () => {
   const date = new Date().toISOString();
-  console.log(date);
 }
 
 toISODate();
