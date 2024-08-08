@@ -5,7 +5,7 @@ const {
   getSupplierSummary, 
   getSuppliers, 
   addSupplier, 
-  upsertSupplier 
+  updateSupplier 
 } = require('./supplierControllers');
 
 const supplierRouter = Router();
@@ -18,7 +18,7 @@ supplierRouter.post("/suppliers", addSupplier);
 supplierRouter.get("/suppliers", getSupplierSummary);
 supplierRouter.patch("/suppliers", getSuppliers);
 //update
-supplierRouter.put("/suppliers/update", upsertSupplier);
+supplierRouter.put("/suppliers/update", updateSupplier);
 //TODO: delete route...
 
 module.exports = supplierRouter;

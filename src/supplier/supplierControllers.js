@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Supplier = require("./supplierModel");
 const Container = require("../container/containerModel");
 const { popOptions } = require("../utils/helperFunctions");
@@ -25,7 +24,8 @@ exports.getSupplierSummary = async (req, res) => {
         supplierId: supplier.supplierId,
         name: supplier.name,
         enabled: supplier.enabled,
-        updatedAt: supplier.updatedAt
+        updatedBy: supplier.updatedBy,
+        updatedAt: supplier.updatedAt,
       };
 
       if (count) {
@@ -88,39 +88,29 @@ exports.addSupplier = async (req, res) => {
   try {
     const supplier = await Supplier.create(req.body);
 
-    res.status(201).send({ supplier });
+    if (supplier){
+      return res.status(201).send({ title: "Add Supplier", message: "The supplier was added successfully" });
+    };
+
+    res.status(404).send({ title: "Something went wrong", message: "The supplier was not added" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 };
 
-exports.upsertSupplier = async (req, res) => {
+exports.updateSupplier = async (req, res) => {
   try {
-    console.log(req.body.supplier)
-    let supplier = null;
+    const filter = { [req.body.filterKey] : req.body.filterValue };
 
-    if (!req.body.supplier._id) {
-      supplier = await Supplier.create(req.body.supplier)
-      console.log(supplier)
-      res.status(201).send({ message: "supplier created successfully" });
-    } else {
-      supplier = await Supplier.findOneAndUpdate(
-        { [req.body.filterKey]: req.body.filterValue },
-        { 
-          supplierId: req.body.supplier.supplierId,
-          name: req.body.supplier.name, 
-          enabled: req.body.supplier.enabled 
-        }
-      );
+    const supplier = await Supplier.updateOne(filter, req.body.supplier)
+    
+    if (supplier.modifiedCount > 0) {
+      return res.status(200).send({ title: "Update Supplier", message: "The supplier was updated successfully" });
+    }
 
-      if (!supplier) {
-        return res.status(404).send({ message: "supplier not found" });
-      }
-    };
+    res.status(404).send({ title: "Something went wrong", message: "The supplier was not updated" });
 
-    res.status(200).send({ message: "supplier updated successfully" });
-  
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
