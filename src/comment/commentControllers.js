@@ -40,10 +40,16 @@ exports.addComment = async (req, res) => {
       order.comments.push(comment);
       await order.save();
     } else {
-      return res.status(404).send({ message: "comment parent not found" });
+      return res.status(404).send({
+        title: "Something went wrong",
+        message: "The comment was not added",
+      });
     }
 
-    res.status(201).send({ message: "comment added successfully" });
+    res.status(201).send({
+      title: "Add comment",
+      message: "The comment was added successfully",
+    });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -52,18 +58,24 @@ exports.addComment = async (req, res) => {
 
 exports.updateComment = async (req, res) => {
   try {
+    const filter = { [req.body.filterKey]: req.body.filterValue };
+    const comment = await Comment.updateOne(filter, req.body.data);
 
-    const comment = await Comment.findOneAndUpdate(
-      { [req.body.filterKey]: req.body.filterValue },
-      { comment: req.body.comment, updatedBy: req.body.updatedBy },
-    );
-
-    if (!comment) {
-      return res.status(404).send({ message: "comment not updated" });
+    if (comment.modifiedCount > 0) {
+      return res
+        .status(200)
+        .send({
+          title: "Update comment",
+          message: "The comment was updated successfully",
+        });
     }
 
-    res.status(200).send({ message: "comment updated successfully" });
-
+    res
+      .status(404)
+      .send({
+        title: "Something went wrong",
+        message: "The comment was not updated",
+      });
     
   } catch (error) {
     res.status(500).send({ error: error.message });

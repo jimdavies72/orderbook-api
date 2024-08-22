@@ -1,7 +1,6 @@
 require("dotenv").config();
 const logger = require("morgan");
 const express = require("express");
-//const expressSession = require("express-session");
 const cors = require("cors");
 const helmet = require("helmet");
 const hpp = require("hpp");
@@ -18,22 +17,14 @@ const testRouter = require("../test/testRoutes");
 
 const unmatchedRouter = require("../unmatched/unmatchedRoutes");
 
-// const session = {
-//   secret: process.env.SESSION_SECRET,
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {
-//     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-//   },
-// };
-
+let appLimit = 200;
 if (process.env.NODE_ENV === "production") {
-  session.cookie.secure = true; // serve secure cookies
+  appLimit = 20
 }
 
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
-  limit: 30, // each IP can make up to 10 requests per `windowsMs` (5 minutes)
+  limit: appLimit, // each IP can make up to 30 requests per `windowsMs` (5 minutes)
   standardHeaders: true, // add the `RateLimit-*` headers to the response
   legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
 });
@@ -43,10 +34,6 @@ exports.createServer = () => {
   app.use(express.json());
 
   app.use(logger("dev"));
-
-  // app.use(
-  //   expressSession(session)
-  // );
 
   // security settings
   app.use(cors());

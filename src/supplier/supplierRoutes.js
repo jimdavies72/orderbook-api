@@ -15,7 +15,7 @@ supplierRouter.use("*", validateAccessToken);
 // add
 supplierRouter.post("/suppliers", addSupplier);
 // get
-supplierRouter.get("/suppliers", getSupplierSummary);
+supplierRouter.put("/suppliers", getSupplierSummary);
 supplierRouter.patch("/suppliers", getSuppliers);
 //update
 supplierRouter.put("/suppliers/update", updateSupplier);

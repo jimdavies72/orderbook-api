@@ -5,7 +5,12 @@ const { popOptions } = require("../utils/helperFunctions");
 
 exports.getSupplierSummary = async (req, res) => {
   try {
-    const suppliers = await Supplier.find({});
+    let filter = {};
+    if (req.body.filterKey) {
+      filter = { [req.body.filterKey]: req.body.filterValue };
+    }
+    
+    const suppliers = await Supplier.find(filter);
 
     if (suppliers.length === 0) {
       return res.status(404).send({ count: 0, suppliers });
@@ -71,13 +76,9 @@ exports.getSuppliers = async (req, res) => {
     let key = "";
     if (suppliers.length === 0) {
       return res.status(404).send({ count: 0, suppliers });
-    } else if (suppliers.length === 1) {
-      key = "supplier"
-    } else {
-      key = "suppliers"
-    };
+    } 
 
-    res.status(200).send({ count: suppliers.length, [key]: suppliers });
+    res.status(200).send({ count: suppliers.length, suppliers: suppliers });
     
   } catch (error) {
     res.status(500).send({ error: error.message });
