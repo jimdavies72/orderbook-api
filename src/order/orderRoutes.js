@@ -4,8 +4,11 @@ const { Router } = require("express");
 const {
   addOrder,
   getOrders,
-  updateOrder
+  updateOrder,
+  deleteOrder
 } = require("./orderControllers");
+
+const { allowDeleteOrder } = require("../middleware");
 
 const orderRouter = Router();
 
@@ -17,6 +20,7 @@ orderRouter.post("/orders", addOrder);
 orderRouter.patch("/orders", getOrders);
 //update
 orderRouter.put("/orders/update", updateOrder);
-//delete ...
+//delete
+orderRouter.put("/orders/delete", allowDeleteOrder, deleteOrder);
 
 module.exports = orderRouter;

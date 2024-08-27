@@ -3,14 +3,14 @@ const Order = require("../order/orderModel");
 const Supplier = require("../supplier/supplierModel");
 const { popOptions } = require("../utils/helperFunctions");
 
-const getSupplierName = async (supplier_id) => {
-  const supplier = await Supplier.findById(supplier_id);
+// const getSupplierName = async (supplier_id) => {
+//   const supplier = await Supplier.findById(supplier_id);
   
-  if (!supplier) {
-    return null;
-  }
-  return supplier.name;
-}
+//   if (!supplier) {
+//     return null;
+//   }
+//   return supplier.name;
+// };
 
 exports.getContainers = async (req, res) => {
   try {
@@ -34,14 +34,10 @@ exports.getContainers = async (req, res) => {
 
     let key = ""
     if (containers.length === 0) {
-      return res.status(404).send({ message: "containers not found" });
-    } else if (containers.length === 1) {
-      key = "container";
-    } else {
-      key = "containers";
+      return res.status(404).send({ title: "containers not found", message: "No containers were found" });
     };
 
-    res.status(200).send({count: containers.length, [key]: containers});
+    res.status(200).send({count: containers.length, containers: containers});
 
   } catch (error) {
     res.status(500).send({ error: error.message }); 
@@ -78,11 +74,33 @@ exports.updateContainer = async (req, res) => {
 
     if (!container) {
       return res.status(404).send({ message: "container not found" });
-    }
+    };
 
     res.status(200).send({ message: "container updated successfully" });
     
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
+};
+
+exports.deleteContainer = async (req, res) => {
+  try {
+    const filter = { [req.body.filterKey]: req.body.filterValue };
+    const container = await Container.deleteOne(filter);
+    
+    if (container.deletedCount > 0) {
+      return res.status(200).send({
+        title: "Delete container",
+        message: "The container was deleted successfully",
+      });
+    }
+
+    res.status(404).send({
+      title: "Something went wrong",
+      message: "The container was not deleted",
+    });
+
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  };
 };

@@ -4,8 +4,11 @@ const { Router } = require("express");
 const {
   getContainers, 
   addContainer, 
-  updateContainer
+  updateContainer,
+  deleteContainer
 } = require("./containerControllers");
+
+const { allowDeleteContainer } = require("../middleware");
 
 const containerRouter = Router();
 
@@ -17,6 +20,7 @@ containerRouter.post("/containers", addContainer);
 containerRouter.patch("/containers", getContainers);
 //update
 containerRouter.put("/containers/update", updateContainer);
-//TODO: delete route ...
+//delete
+containerRouter.put("/containers/delete", allowDeleteContainer, deleteContainer);
 
 module.exports = containerRouter;

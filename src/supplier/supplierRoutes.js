@@ -5,8 +5,13 @@ const {
   getSupplierSummary, 
   getSuppliers, 
   addSupplier, 
-  updateSupplier 
+  updateSupplier,
+  deleteSupplier
 } = require('./supplierControllers');
+
+const {
+  allowDeleteSupplier
+} = require("../middleware");
 
 const supplierRouter = Router();
 
@@ -19,6 +24,7 @@ supplierRouter.put("/suppliers", getSupplierSummary);
 supplierRouter.patch("/suppliers", getSuppliers);
 //update
 supplierRouter.put("/suppliers/update", updateSupplier);
-//TODO: delete route...
+// delete route
+supplierRouter.put("/suppliers/delete", allowDeleteSupplier, deleteSupplier);
 
 module.exports = supplierRouter;

@@ -79,5 +79,28 @@ exports.updateComment = async (req, res) => {
     
   } catch (error) {
     res.status(500).send({ error: error.message });
+  };
+};
+
+exports.deleteComment = async (req, res) => {
+  try {
+    const filter = { [req.body.filterKey]: req.body.filterValue };
+    const comment = await Comment.deleteOne(filter);
+    if (comment.deletedCount > 0) {
+      return res
+        .status(200)
+        .send({
+          title: "Delete comment",
+          message: "The comment was deleted successfully",
+        });
+    }
+    res
+      .status(404)
+      .send({
+        title: "Something went wrong",
+        message: "The comment was not deleted",
+      });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
   }
-}
+};

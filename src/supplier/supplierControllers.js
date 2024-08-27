@@ -12,6 +12,7 @@ exports.getSupplierSummary = async (req, res) => {
     
     const suppliers = await Supplier.find(filter);
 
+
     if (suppliers.length === 0) {
       return res.status(404).send({ count: 0, suppliers });
     };
@@ -112,6 +113,19 @@ exports.updateSupplier = async (req, res) => {
 
     res.status(404).send({ title: "Something went wrong", message: "The supplier was not updated" });
 
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+exports.deleteSupplier = async (req, res) => {
+  try {
+    const filter = { [req.body.filterKey] : req.body.filterValue };
+    const supplier = await Supplier.deleteOne(filter);
+    if (supplier.deletedCount > 0) {
+      return res.status(200).send({ title: "Delete supplier", message: "The supplier was deleted successfully" });
+    }
+    res.status(404).send({ title: "Something went wrong", message: "The supplier was not deleted" });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
