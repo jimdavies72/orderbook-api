@@ -2,6 +2,7 @@ const Audit = require("./auditModel");
 
 exports.getAudits = async (req, res) => {
   try {
+    console.log(req.body);
     let filter = {};
     if (req.body.filterKey) {
       filter = { [req.body.filterKey]: req.body.filterValue };
@@ -35,7 +36,9 @@ exports.addAudit = async (req, res) => {
       title: "Add Audit",
       message: "The audit was added successfully",
     });
+    
   } catch (error) {
     res.status(500).send({ error: error.message });
+    console.log(error.message)
   }
 };

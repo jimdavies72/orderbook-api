@@ -14,6 +14,7 @@ const containerRouter = require("../container/containerRoutes");
 const orderRouter = require("../order/orderRoutes");
 const commentRouter = require("../comment/commentRoutes");
 const auditRouter = require("../audit/auditRoutes");
+const appSettingsRouter = require("../appSetting/appSettingRoutes");
 const testRouter = require("../test/testRoutes");
 
 const unmatchedRouter = require("../unmatched/unmatchedRoutes");
@@ -48,7 +49,7 @@ exports.createServer = () => {
   app.use(orderRouter);
   app.use(commentRouter);
   app.use(auditRouter);
-
+  app.use(appSettingsRouter);
   //TODO: add new routes here:
 
   //error handler for invalid tokens
