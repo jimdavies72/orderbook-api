@@ -13,6 +13,14 @@ const appSettingSchema = new Schema(
       type: String,
       required: true,
     },
+    defaultLeadTime: {
+      type: Number,
+      default: 12,
+    },
+    defaultProductionTime: {
+      type: Number,
+      default: 7,
+    },
   },
   { timestamps: true }
 );

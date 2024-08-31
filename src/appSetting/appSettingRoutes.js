@@ -1,17 +1,25 @@
 const { validateAccessToken } = require("../middleware/auth0.middleware");
 const { Router } = require("express");
 
-const { addAppSettings, getAppSettings, updateAppSettings } = require("./appSettingControllers");
+const {
+  addAppSettings,
+  getAppSettings,
+  getPublicSettings,
+  updateAppSettings,
+} = require("./appSettingControllers");
 
 const appSettingRouter = Router();
 
-appSettingRouter.use("*", validateAccessToken);
-
-// add
-appSettingRouter.post("/appsetting", addAppSettings);
+// public routes
 // get
-appSettingRouter.patch("/appsetting", getAppSettings);
+appSettingRouter.put("/appsetting", getPublicSettings);
+
+// private routes
+// add
+appSettingRouter.post("/appsetting", validateAccessToken, addAppSettings);
+// get
+appSettingRouter.patch("/appsetting", validateAccessToken, getAppSettings);
 //update
-appSettingRouter.put("/appsetting/update", updateAppSettings);
+appSettingRouter.put("/appsetting/update", validateAccessToken, updateAppSettings);
 
 module.exports = appSettingRouter;

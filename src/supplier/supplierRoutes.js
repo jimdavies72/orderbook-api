@@ -15,16 +15,16 @@ const {
 
 const supplierRouter = Router();
 
-supplierRouter.use("*", validateAccessToken);
-
 // add
-supplierRouter.post("/suppliers", addSupplier);
+supplierRouter.post("/suppliers", validateAccessToken, addSupplier);
 // get
-supplierRouter.put("/suppliers", getSupplierSummary);
-supplierRouter.patch("/suppliers", getSuppliers);
+supplierRouter.put("/suppliers", validateAccessToken, getSupplierSummary);
+supplierRouter.patch("/suppliers", validateAccessToken, getSuppliers);
 //update
-supplierRouter.put("/suppliers/update", updateSupplier);
+supplierRouter.put("/suppliers/update", validateAccessToken, updateSupplier);
 // delete route
-supplierRouter.put("/suppliers/delete", allowDeleteSupplier, deleteSupplier);
+supplierRouter.put("/suppliers/delete", validateAccessToken, allowDeleteSupplier,
+  deleteSupplier
+);
 
 module.exports = supplierRouter;

@@ -12,15 +12,18 @@ const { allowDeleteContainer } = require("../middleware");
 
 const containerRouter = Router();
 
-containerRouter.use("*", validateAccessToken);
-
 // add
-containerRouter.post("/containers", addContainer);
+containerRouter.post("/containers", validateAccessToken, addContainer);
 // get
-containerRouter.patch("/containers", getContainers);
+containerRouter.patch("/containers", validateAccessToken, getContainers);
 //update
-containerRouter.put("/containers/update", updateContainer);
+containerRouter.put("/containers/update", validateAccessToken, updateContainer);
 //delete
-containerRouter.put("/containers/delete", allowDeleteContainer, deleteContainer);
+containerRouter.put(
+  "/containers/delete",
+  validateAccessToken,
+  allowDeleteContainer,
+  deleteContainer
+);
 
 module.exports = containerRouter;

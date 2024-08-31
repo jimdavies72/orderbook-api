@@ -2,7 +2,6 @@ const Audit = require("./auditModel");
 
 exports.getAudits = async (req, res) => {
   try {
-    console.log(req.body);
     let filter = {};
     if (req.body.filterKey) {
       filter = { [req.body.filterKey]: req.body.filterValue };

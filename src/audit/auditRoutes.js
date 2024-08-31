@@ -5,11 +5,9 @@ const { addAudit, getAudits } = require("./auditControllers");
 
 const auditRouter = Router();
 
-auditRouter.use("*", validateAccessToken);
-
 // add
-auditRouter.post("/audit", addAudit);
+auditRouter.post("/audit", validateAccessToken, addAudit);
 // get
-auditRouter.patch("/audit", getAudits);
+auditRouter.patch("/audit", validateAccessToken, getAudits);
 
 module.exports = auditRouter;

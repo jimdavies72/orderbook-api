@@ -16,7 +16,6 @@ const commentRouter = require("../comment/commentRoutes");
 const auditRouter = require("../audit/auditRoutes");
 const appSettingsRouter = require("../appSetting/appSettingRoutes");
 const testRouter = require("../test/testRoutes");
-
 const unmatchedRouter = require("../unmatched/unmatchedRoutes");
 
 let appLimit = 200;
@@ -43,21 +42,21 @@ exports.createServer = () => {
   app.use(hpp());
   app.use(limiter);
   
-  app.use(testRouter);
   app.use(supplierRouter);
   app.use(containerRouter);
   app.use(orderRouter);
   app.use(commentRouter);
   app.use(auditRouter);
   app.use(appSettingsRouter);
+  app.use(testRouter);
   //TODO: add new routes here:
+
+  //default for unmatched routes
+  app.use(unmatchedRouter);
 
   //error handler for invalid tokens
   app.use(errorHandler);
-  
-  //default for unmatched routes
-  app.use(unmatchedRouter);
-  
+
   app.use(csurf());
   
   return app;

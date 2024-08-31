@@ -12,15 +12,18 @@ const { allowDeleteOrder } = require("../middleware");
 
 const orderRouter = Router();
 
-orderRouter.use("*", validateAccessToken);
-
 // add
-orderRouter.post("/orders", addOrder);
+orderRouter.post("/orders", validateAccessToken, addOrder);
 // get
-orderRouter.patch("/orders", getOrders);
+orderRouter.patch("/orders", validateAccessToken, getOrders);
 //update
-orderRouter.put("/orders/update", updateOrder);
+orderRouter.put("/orders/update", validateAccessToken, updateOrder);
 //delete
-orderRouter.put("/orders/delete", allowDeleteOrder, deleteOrder);
+orderRouter.put(
+  "/orders/delete",
+  validateAccessToken,
+  allowDeleteOrder,
+  deleteOrder
+);
 
 module.exports = orderRouter;

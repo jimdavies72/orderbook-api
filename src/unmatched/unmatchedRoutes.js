@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { respondUnmatched } = require("./unmatchedControllers");
 
-unmatchedRouter = Router()
+const unmatchedRouter = Router()
 
 unmatchedRouter.use("*", respondUnmatched);
 

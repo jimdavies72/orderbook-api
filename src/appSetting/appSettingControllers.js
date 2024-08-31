@@ -1,8 +1,9 @@
 const AppSetting = require("./appSettingModel");
 
 exports.getAppSettings = async (req, res) => {
+  //private application app settings only
   try {
-    const appSettings = await AppSetting.find({appId: req.body.appId}).select("-appId -_id");
+    const appSettings = await AppSetting.find({ appId: req.body.appId }).select("-appId -_id");
       
     if (!appSettings) {
       res.status(404).send({ title:"Get App Settings", message: "No app settings found" });
@@ -15,6 +16,28 @@ exports.getAppSettings = async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 };
+
+exports.getPublicSettings = async (req, res) => {
+  // return only public facing settings (e.g. companyName)
+  try {
+    const publicSettings = await AppSetting.find({ appId: req.body.appId }).select(
+      "companyName -_id"
+    );
+
+    if (!publicSettings) {
+      res
+        .status(404)
+        .send({ title: "Public settings", message: "Public settings not found" });
+      return;
+    }
+
+    res.status(200).send({ publicSettings });
+
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
 
 exports.addAppSettings = async (req, res) => {
   try {

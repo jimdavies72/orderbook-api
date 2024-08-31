@@ -5,20 +5,15 @@ const {
 
 const errorHandler = (error, request, response, next) => {
   if (error instanceof InvalidTokenError) {
-    
     const message = "Bad credentials";
 
-    response.status(error.status).json({ message });
-
-    return;
+    return response.status(error.status).json({ message });
   }
 
   if (error instanceof UnauthorizedError) {
     const message = "Requires authentication";
 
-    response.status(error.status).json({ message });
-
-    return;
+    return response.status(error.status).json({ message });
   }
 
   const status = 500;
@@ -28,5 +23,5 @@ const errorHandler = (error, request, response, next) => {
 };
 
 module.exports = {
-  errorHandler,
+  errorHandler
 };
