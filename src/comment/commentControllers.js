@@ -9,7 +9,9 @@ exports.getComments = async (req, res) => {
       filter = { [req.body.filterKey]: req.body.filterValue }
     }
   
-    const comments = await Comment.find(filter).populate("container", "containerId").populate("order", "orderNumber");
+    const comments = await Comment.find(filter)
+      .populate("container", "supplierContainerNumber")
+      .populate("order", "orderNumber");
 
     if (!comments) {
       res.status(404).send({ message: "comments not found" });

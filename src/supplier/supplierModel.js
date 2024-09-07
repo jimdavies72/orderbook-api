@@ -25,6 +25,7 @@ const supplierSchema = new Schema(
       required: true,
     },
     containers: [{ type: Schema.Types.ObjectId, ref: "Container" }],
+    reminders: [{ type: Schema.Types.ObjectId, ref: "Reminder" }],
   },
   { timestamps: true }
 );

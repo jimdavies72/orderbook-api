@@ -20,18 +20,18 @@ exports.getAppSettings = async (req, res) => {
 exports.getPublicSettings = async (req, res) => {
   // return only public facing settings (e.g. companyName)
   try {
-    const publicSettings = await AppSetting.find({ appId: req.body.appId }).select(
+    const appSettings = await AppSetting.find({ appId: req.body.appId }).select(
       "companyName -_id"
     );
 
-    if (!publicSettings) {
+    if (!appSettings) {
       res
         .status(404)
         .send({ title: "Public settings", message: "Public settings not found" });
       return;
     }
 
-    res.status(200).send({ publicSettings });
+    res.status(200).send({ appSettings });
 
   } catch (error) {
     res.status(500).send({ error: error.message });

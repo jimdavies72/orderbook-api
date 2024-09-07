@@ -2,6 +2,7 @@ const Supplier = require("../supplier/supplierModel");
 const Container = require("../container/containerModel");
 const Order = require("../order/orderModel");
 const Comment = require("../comment/commentModel");
+const Reminder = require("../reminders/reminderModel");
 
 exports.allowDeleteSupplier = async (req, res, next) => {
   try {
@@ -123,4 +124,22 @@ exports.allowDeleteComment = async (req, res, next) => {
   } catch (error) {
     res.status(500).send({ error: error.message });
   };
+};
+
+exports.allowDeleteReminder = async (req, res, next) => {
+  try {
+    const filter = { [req.body.filterKey]: req.body.filterValue };
+    const reminder = await Reminder.find(filter);
+
+    if (reminder.length === 0) {
+      return res.status(404).send({
+        title: "Reminder not found",
+        message: "The reminder was not deleted",
+      });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 };
