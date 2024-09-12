@@ -2,45 +2,42 @@ const Supplier = require("./supplierModel");
 const Container = require("../container/containerModel");
 const { popOptions } = require("../utils/helperFunctions");
 
-
 exports.getSupplierSummary = async (req, res) => {
   try {
     let filter = {};
     if (req.body.filterKey) {
       filter = { [req.body.filterKey]: req.body.filterValue };
     }
-    
-    const suppliers = await Supplier.find(filter);
 
+    const suppliers = await Supplier.find(filter).populate("reminders");
 
     if (suppliers.length === 0) {
       return res.status(404).send({ count: 0, suppliers });
     };
     
-    const containers = await Container.aggregate([{ "$match": {"complete": false}}]).group({
-      _id: "$supplier",
-      count: { $sum: 1 }
-    });
-    
-    const supplierSummary = suppliers.map((supplier) => {
-      const count = containers.find((c) => c._id.toString() === supplier._id.toString());
+    const containers = await Container.aggregate([
+      { $match: { complete: false } },
+    ])
+      .group({
+        _id: "$supplier",
+        count: { $sum: 1 },
+      });
 
-      let object = {
+      
+      const supplierSummary = suppliers.map((supplier) => {
+        const count = containers.find((c) => c._id.toString() === supplier._id.toString());
+        //const count = containers
+
+      return {
         _id: supplier._id,
         supplierId: supplier.supplierId,
         name: supplier.name,
+        reminders: supplier.reminders,
+        activeContainerCount: count ? count.count : 0,
         enabled: supplier.enabled,
         updatedBy: supplier.updatedBy,
         updatedAt: supplier.updatedAt,
       };
-
-      if (count) {
-        object = { ...object, activeContainerCount: count.count}
-      } else {
-        object = { ...object, activeContainerCount: 0 };
-      }
-
-      return object;
 
     });
 
@@ -56,7 +53,7 @@ exports.getSuppliers = async (req, res) => {
     let filter = {};
     if (req.body.filterKey) {
       filter = { [req.body.filterKey]: req.body.filterValue };
-    };
+    }
 
     const commentOptions = popOptions(
       "containers",
@@ -69,18 +66,23 @@ exports.getSuppliers = async (req, res) => {
       "containers",
       req.body.includeComplete,
       ["supplier"],
-      { path: "orders", select: "-container", populate: { path: "comments", select: "-order" } }
+      {
+        path: "orders",
+        select: "-container",
+        populate: { path: "comments", select: "-order" },
+      }
     );
 
-    const suppliers = await Supplier.find(filter).populate(commentOptions).populate(orderOptions);
+    const suppliers = await Supplier.find(filter)
+      .populate(commentOptions)
+      .populate(orderOptions)
+      .populate("reminders");
 
-    let key = "";
     if (suppliers.length === 0) {
-      return res.status(404).send({ count: 0, suppliers });
-    } 
+      return res.status(404).send({ count: 0, suppliers: suppliers });
+    }
 
     res.status(200).send({ count: suppliers.length, suppliers: suppliers });
-    
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
