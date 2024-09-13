@@ -17,6 +17,7 @@ const auditRouter = require("../audit/auditRoutes");
 const reminderRouter = require("../reminders/reminderRoutes");
 const appSettingsRouter = require("../appSetting/appSettingRoutes");
 const testRouter = require("../test/testRoutes");
+const currencyRouter = require("../currency/currencyRoutes");
 const unmatchedRouter = require("../unmatched/unmatchedRoutes");
 
 let appLimit = 200;
@@ -50,7 +51,8 @@ exports.createServer = () => {
   app.use(auditRouter);
   app.use(reminderRouter);
   app.use(appSettingsRouter);
-  app.use(testRouter);
+  app.use(currencyRouter);
+  app.use("*",testRouter);
   //TODO: add new routes here:
 
   //default for unmatched routes

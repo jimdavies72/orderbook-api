@@ -2,7 +2,8 @@ const { validateAccessToken } = require("../middleware/auth0.middleware");
 const { Router } = require("express");
 
 const {
-  getContainers, 
+  getContainers,
+  getBookedInDates, 
   addContainer, 
   updateContainer,
   deleteContainer
@@ -16,6 +17,7 @@ const containerRouter = Router();
 containerRouter.post("/containers", validateAccessToken, addContainer);
 // get
 containerRouter.patch("/containers", validateAccessToken, getContainers);
+containerRouter.patch("/containers/delivery", validateAccessToken, getBookedInDates);
 //update
 containerRouter.put("/containers/update", validateAccessToken, updateContainer);
 //delete

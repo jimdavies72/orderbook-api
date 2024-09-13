@@ -32,7 +32,29 @@ exports.getContainers = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({ error: error.message }); 
-  }
+  };
+};
+
+exports.getBookedInDates = async (req, res) => {
+  try {
+
+    const bookedInDates = await Container.find({ bookedInDate: { $ne: null } }).select(
+      " shippingContainerNumber bookedInDate bookedInSlot -_id"
+    );
+
+    if (!bookedInDates) {
+      res.status(404).send({
+        title: "Something went wrong",
+        message: "Booked in dates not found",
+      });
+      return;
+    }
+
+    res.status(200).send({ bookedInDates });
+    
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  };
 };
 
 exports.addContainer = async (req, res) => {

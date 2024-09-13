@@ -14,8 +14,7 @@ exports.getReminders = async (req, res) => {
     const reminders = await Reminder.find(filter)
 
     if (!reminders) {
-      res.status(404).send({ title: "Something went wrong", message: "reminders not found" });
-      return;
+      return res.status(404).send({ title: "Something went wrong", message: "reminders not found" });
     }
 
     res.status(200).send({ reminders });
