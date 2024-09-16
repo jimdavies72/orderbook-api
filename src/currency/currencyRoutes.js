@@ -17,7 +17,7 @@ currencyRouter.post("/currency", validateAccessToken, addListData);
 currencyRouter.put("/currency", validateAccessToken, getCurrencyData);
 currencyRouter.patch("/currency", validateAccessToken, getListData);
 
-// TODO: update - admin function - refresh data if currency data is added or
+// TODO: updateCurrencyData - admin function - refresh data if currency data is added or
 // removed from the origin API
 currencyRouter.put("/currency/update", validateAccessToken, updateListData);
 

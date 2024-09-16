@@ -3,10 +3,13 @@ const { Schema } = mongoose;
 
 const currencySchema = new Schema(
   {
-    unselected: {
+    baseCurrencyDefault: {
+      type: String,
+    },
+    currencyList: {
       type: [],
     },
-    selected: {
+    currenciesUsed: {
       type: [],
     },
     updatedBy: {
