@@ -59,7 +59,7 @@ const containerSchema = new Schema(
       required: false,
     },
     bookedInSlot: {
-      type: Array,
+      type: String,
       required: false,
     },
     copyDocsReceived: {

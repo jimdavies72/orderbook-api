@@ -14,7 +14,7 @@ const fetchCurrencyData = async (route, params = "") => {
       apikey: apikey,
     },
   });
-}
+};
 
 exports.getCurrencyData = async (req, res) => {
   try {
@@ -47,7 +47,7 @@ exports.getCurrencyData = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.getListData = async (req, res) => {
@@ -62,7 +62,7 @@ exports.getListData = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.updateListData = async (req, res) => {
@@ -77,7 +77,7 @@ exports.updateListData = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.updateCurrencyData = async (req, res) => {
@@ -87,7 +87,7 @@ exports.updateCurrencyData = async (req, res) => {
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.addListData = async (req, res) => {
@@ -114,14 +114,9 @@ exports.addListData = async (req, res) => {
       return res.status(response.status).send({ title: "Add list data", message: "List data could not be added" });
     }
 
-    res
-      .status(201)
-      .send({
-        title: "Add list data",
-        message: "List data added successfully",
-      });
+    res.status(201).send({ title: "Add list data", message: "List data added successfully" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };

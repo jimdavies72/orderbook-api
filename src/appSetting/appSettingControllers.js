@@ -1,3 +1,4 @@
+const { isRo } = require("../utils/helperFunctions");
 const AppSetting = require("./appSettingModel");
 
 exports.getAppSettings = async (req, res) => {
@@ -5,9 +6,8 @@ exports.getAppSettings = async (req, res) => {
   try {
     const appSettings = await AppSetting.find({ appId: req.body.appId }).select("-appId -_id");
       
-    if (!appSettings) {
-      res.status(404).send({ title:"Get App Settings", message: "No app settings found" });
-      return;
+    if (!isRo(appSettings)) {
+      return res.status(404).send({ title:"App Settings", message: "App settings not found" });
     }
 
     res.status(200).send({ appSettings });
@@ -24,11 +24,8 @@ exports.getPublicSettings = async (req, res) => {
       "companyName -_id"
     );
 
-    if (!appSettings) {
-      res
-        .status(404)
-        .send({ title: "Public settings", message: "Public settings not found" });
-      return;
+    if (!isRo(appSettings)) {
+      return res.status(404).send({ title: "Public App Settings", message: "Public settings not found" });
     }
 
     res.status(200).send({ appSettings });
@@ -38,46 +35,30 @@ exports.getPublicSettings = async (req, res) => {
   }
 };
 
-
 exports.addAppSettings = async (req, res) => {
   try {
-    const appsettings = await AppSetting.create(req.body);
+    const appSettings = await AppSetting.create(req.body);
 
-    if (!appsettings) {
-      return res
-        .status(404)
-        .send({ title: "Add App Settings", message: "App settings could not be added" });
+    if (!isRo(appSettings)) {
+      return res.status(400).send({ title: "App Settings", message: "App settings could not be added" });
     }
 
-    res.status(201).send({
-      title: "Add App Settings",
-      message: "The app settings were added successfully",
-    });
+    res.status(201).send({ title: "App Settings", message: "App settings were added successfully" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-    console.log(error.message)
   }
 };
 
 exports.updateAppSettings = async (req, res) => {
   try {
-    const appSetting = await AppSetting.updateOne(
-      { appId: req.body.appId },
-      req.body.data
-    );
+    const appSettings = await AppSetting.updateOne({ appId: req.body.appId }, req.body.data);
 
-    if (appSetting.modifiedCount > 0) {
-      return res.status(200).send({
-        title: "Update App Settings",
-        message: "App settings were updated successfully",
-      });
+    if (appSettings.modifiedCount > 0) {
+      return res.status(200).send({ title: "App Settings", message: "App settings were updated successfully" });
     }
 
-    res.status(404).send({
-      title: "Something went wrong",
-      message: "App settings were not updated",
-    });
+    res.status(404).send({ title: "App Settings",message: "App settings were not updated" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });

@@ -29,4 +29,11 @@ const toISODate = () => {
   const date = new Date().toISOString();
 }
 
-toISODate();
+exports.isRo = (responseObject = undefined) => {
+  // is response object
+  if (responseObject && responseObject.length > 0) {
+    return true;
+  };
+  
+  return false;
+};

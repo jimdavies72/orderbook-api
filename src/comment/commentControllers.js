@@ -1,6 +1,7 @@
 const Comment = require("./commentModel");
 const Container = require("../container/containerModel");
 const Order = require("../order/orderModel");
+const { isRo } = require("../utils/helperFunctions");
 
 exports.getComments = async (req, res) => {
   try {
@@ -13,24 +14,23 @@ exports.getComments = async (req, res) => {
       .populate("container", "supplierContainerNumber")
       .populate("order", "orderNumber");
 
-    if (!comments) {
-      res.status(404).send({ message: "comments not found" });
-      return;
+    if (!isRo(comments)) {
+      return res.status(404).send({ title: "Comments", message: "Comments not found" });
     }
 
-    res.status(200).send({count: comments.length, comment: comments });
+    res.status(200).send({ count: comments.length, comment: comments });
    
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.addComment = async (req, res) => {
   try {
     const comment = await Comment.create(req.body);
 
-    if (!comment) {
-     return res.status(404).send({ message: "comment could not be added" });
+    if (!isRo(comment)) {
+      return res.status(400).send({ title: "Comments", message: "Comment could not be added" });
     }
 
     if (req.body.container) {
@@ -42,20 +42,14 @@ exports.addComment = async (req, res) => {
       order.comments.push(comment);
       await order.save();
     } else {
-      return res.status(404).send({
-        title: "Something went wrong",
-        message: "The comment was not added",
-      });
+      return res.status(400).send({ title: "Comments", message: "Comment could not be added" });
     }
 
-    res.status(201).send({
-      title: "Add comment",
-      message: "The comment was added successfully",
-    });
+    res.status(201).send({ title: "Comments", message: "The comment was added successfully" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.updateComment = async (req, res) => {
@@ -64,20 +58,10 @@ exports.updateComment = async (req, res) => {
     const comment = await Comment.updateOne(filter, req.body.data);
 
     if (comment.modifiedCount > 0) {
-      return res
-        .status(200)
-        .send({
-          title: "Update comment",
-          message: "The comment was updated successfully",
-        });
+      return res.status(200).send({ title: "Comments", message: "The comment was updated successfully" });
     }
 
-    res
-      .status(404)
-      .send({
-        title: "Something went wrong",
-        message: "The comment was not updated",
-      });
+    res.status(404).send({ title: "Something went wrong", message: "The comment was not updated" });
     
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -88,21 +72,14 @@ exports.deleteComment = async (req, res) => {
   try {
     const filter = { [req.body.filterKey]: req.body.filterValue };
     const comment = await Comment.deleteOne(filter);
+
     if (comment.deletedCount > 0) {
-      return res
-        .status(200)
-        .send({
-          title: "Delete comment",
-          message: "The comment was deleted successfully",
-        });
+      return res.status(200).send({ title: "Comments", message: "The comment was deleted successfully" });
     }
-    res
-      .status(404)
-      .send({
-        title: "Something went wrong",
-        message: "The comment was not deleted",
-      });
+
+    res.status(404).send({ title: "Something went wrong", message: "The comment was not deleted" });
+
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };

@@ -1,6 +1,6 @@
 const Supplier = require("./supplierModel");
 const Container = require("../container/containerModel");
-const { popOptions } = require("../utils/helperFunctions");
+const { popOptions, isRo } = require("../utils/helperFunctions");
 
 exports.getSupplierSummary = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ exports.getSupplierSummary = async (req, res) => {
 
     const suppliers = await Supplier.find(filter).populate("reminders");
 
-    if (suppliers.length === 0) {
+    if (isRo(suppliers)) {
       return res.status(404).send({ count: 0, suppliers });
     };
     
@@ -26,26 +26,24 @@ exports.getSupplierSummary = async (req, res) => {
       
       const supplierSummary = suppliers.map((supplier) => {
         const count = containers.find((c) => c._id.toString() === supplier._id.toString());
-        //const count = containers
 
-      return {
-        _id: supplier._id,
-        supplierId: supplier.supplierId,
-        name: supplier.name,
-        reminders: supplier.reminders,
-        activeContainerCount: count ? count.count : 0,
-        enabled: supplier.enabled,
-        updatedBy: supplier.updatedBy,
-        updatedAt: supplier.updatedAt,
-      };
-
-    });
+        return {
+          _id: supplier._id,
+          supplierId: supplier.supplierId,
+          name: supplier.name,
+          reminders: supplier.reminders,
+          activeContainerCount: count ? count.count : 0,
+          enabled: supplier.enabled,
+          updatedBy: supplier.updatedBy,
+          updatedAt: supplier.updatedAt,
+        };
+      });
 
     res.status(200).send({ count: suppliers.length, suppliers: supplierSummary });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.getSuppliers = async (req, res) => {
@@ -92,11 +90,11 @@ exports.addSupplier = async (req, res) => {
   try {
     const supplier = await Supplier.create(req.body);
 
-    if (supplier){
-      return res.status(201).send({ title: "Add Supplier", message: "The supplier was added successfully" });
+    if (isRo(supplier)){
+      return res.status(201).send({ title: "Suppliers", message: "The supplier was added successfully" });
     };
 
-    res.status(404).send({ title: "Something went wrong", message: "The supplier was not added" });
+    res.status(400).send({ title: "Suppliers", message: "The supplier was not added" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -110,14 +108,14 @@ exports.updateSupplier = async (req, res) => {
     const supplier = await Supplier.updateOne(filter, req.body.supplier)
     
     if (supplier.modifiedCount > 0) {
-      return res.status(200).send({ title: "Update Supplier", message: "The supplier was updated successfully" });
+      return res.status(200).send({ title: "Suppliers", message: "The supplier was updated successfully" });
     }
 
-    res.status(404).send({ title: "Something went wrong", message: "The supplier was not updated" });
+    res.status(404).send({ title: "Suppliers", message: "The supplier was not updated" });
 
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
 exports.deleteSupplier = async (req, res) => {
@@ -125,11 +123,11 @@ exports.deleteSupplier = async (req, res) => {
     const filter = { [req.body.filterKey] : req.body.filterValue };
     const supplier = await Supplier.deleteOne(filter);
     if (supplier.deletedCount > 0) {
-      return res.status(200).send({ title: "Delete supplier", message: "The supplier was deleted successfully" });
+      return res.status(200).send({ title: "Suppliers", message: "The supplier was deleted successfully" });
     }
-    res.status(404).send({ title: "Something went wrong", message: "The supplier was not deleted" });
+    res.status(404).send({ title: "Suppliers", message: "The supplier was not deleted" });
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
+  };
 };
 
