@@ -13,6 +13,8 @@ const options = {
 request(options, function (error, response, body) {
   if (error) throw new Error(error);
   
-  console.log(body);
+  const token = JSON.parse(body).access_token;
+  console.log(token);
+  //return token;
 });
 

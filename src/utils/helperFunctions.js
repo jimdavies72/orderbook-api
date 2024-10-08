@@ -29,6 +29,7 @@ const toISODate = () => {
   const date = new Date().toISOString();
 }
 
+
 exports.isRo = (responseObject = undefined) => {
   // is response object
   if (responseObject && responseObject.length > 0) {
@@ -36,4 +37,12 @@ exports.isRo = (responseObject = undefined) => {
   };
   
   return false;
+};
+
+exports.properString = (string) => {
+  try {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  } catch (error) {
+    console.log(error.message);
+  };
 };

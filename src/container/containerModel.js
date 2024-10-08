@@ -7,7 +7,6 @@ const containerSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Supplier",
     },
-    // internal container id NOT the doc _id from mongo
     supplierContainerNumber: {
       type: String,
       required: true,
@@ -102,6 +101,8 @@ const containerSchema = new Schema(
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );
+
+containerSchema.index({ supplier: 1, supplierContainerNumber: 1 }, { unique: true });
 
 const Container = mongoose.model.Container || mongoose.model("Container", containerSchema);
 

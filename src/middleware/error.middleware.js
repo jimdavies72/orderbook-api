@@ -3,7 +3,7 @@ const {
   UnauthorizedError,
 } = require("express-oauth2-jwt-bearer");
 
-const errorHandler = (error, request, response, next) => {
+exports.errorHandler = (error, request, response, next) => {
   if (error instanceof InvalidTokenError) {
     const message = "Bad credentials";
 
@@ -20,8 +20,4 @@ const errorHandler = (error, request, response, next) => {
   const message = "Internal Server Error";
 
   response.status(status).json({ message });
-};
-
-module.exports = {
-  errorHandler
 };

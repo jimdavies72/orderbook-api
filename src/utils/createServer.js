@@ -52,7 +52,7 @@ exports.createServer = () => {
   app.use(reminderRouter);
   app.use(appSettingsRouter);
   app.use(currencyRouter);
-  app.use("*",testRouter);
+  app.use(testRouter);
   //TODO: add new routes here:
 
   //default for unmatched routes
