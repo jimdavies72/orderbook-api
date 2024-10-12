@@ -21,7 +21,7 @@ exports.getMockToken = async () => {
     let token = await server.issuer.buildToken();
     return token;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   };
 };
 

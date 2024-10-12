@@ -24,7 +24,7 @@ afterAll(async () => {
 describe("Audit Model", () => {
   describe("given a user is performing an auditable action in the app", () => {
     describe("when the action is completed then", () => {
-      it("validate saving a new audit record successfully", async () => {
+      it("should validate saving a new audit record successfully", async () => {
         // arrange
         const validAuditRecord = new Audit(fakeAuditData);
         
@@ -48,14 +48,12 @@ describe("Audit Model", () => {
     //     // arrange
     //     expect.assertions(4);
     //     const validAuditRecord = new Audit(fakeAuditData);
-    //     console.log(validAuditRecord)
 
     //     //act
     //     try {
     //       await validAuditRecord.save();
     //     } catch (err) {
     //       //assert
-    //       console.log("Got to the assert")
     //       validateMongoDuplicationError(err.name, err.code);
     //     };
     //   });

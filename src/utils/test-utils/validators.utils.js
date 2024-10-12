@@ -13,7 +13,15 @@ exports.validateStringEquality = (received, expected) => {
 
 exports.validateMongoDuplicationError = (name, code) => {
   expect(name).not.toEqual(/dummy/i);
-  expect(name).toEqual("MongoError");
+  expect(name).toEqual("MongoServerError");
   expect(code).not.toBe(255);
   expect(code).toBe(11000);
 };
+
+exports.validateCrudOperation = (received) => {
+  expect(received).not.toBeNull();
+  expect(received).not.toBeUndefined();
+  expect(received).toBeTruthy();
+  expect(typeof(received)).toBe("object");
+  expect(received._id).not.toBeNull();
+}
