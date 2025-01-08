@@ -7,5 +7,6 @@
 ### Description: A fully operational Node.JS REST API
 
 - This is the backend REST API for the corresponding frontend app found here: [orderbook-app](https://github.com/jimdavies72/orderbook-app)
-- Written in Node.JS / Express.JS
+- Incorporates Auth0 Authentication and Authorisation
+- Tech Stack: Node.JS | Express.JS | Auth0
   
